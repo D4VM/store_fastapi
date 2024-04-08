@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 
 from app.database import engine
 from app.users.models import UserModel
-from app.users.schemas import SUserRequest, SUserAuth
+from app.users.schemas import SUserRequest
 from app.users.auth import get_password_hash, verify_password
 
 
@@ -30,6 +30,8 @@ class UserService:
     @classmethod
     def authenticate_user(cls, user):
         existing_user = engine.find_one(UserModel, UserModel.email == user.email)
+        if not existing_user:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User doesn't exists")
         if not verify_password(user.password, existing_user.password):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
         return existing_user

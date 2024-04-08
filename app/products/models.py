@@ -1,5 +1,4 @@
 from odmantic import Model, Field
-from pydantic import Extra, BaseConfig
 
 
 class ProductModel(Model):
